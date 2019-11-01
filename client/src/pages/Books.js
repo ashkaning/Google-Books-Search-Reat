@@ -29,8 +29,9 @@ class Books extends Component {
       .catch(err => console.log(err));
   };
 
-  deleteBook = id => {
-    API.deleteBook(id)
+  saveBook = (data) => {
+    console.log(data)
+    API.saveBook(data)
       .then(res => this.loadBooks())
       .catch(err => console.log(err));
   };
@@ -59,7 +60,7 @@ class Books extends Component {
     return (
       <Container fluid>
         <Row>
-          <Col size="md-6">
+          <Col size="md-12">
             <Jumbotron>
               <h1>What Book Are You Looking For?</h1>
             </Jumbotron>
@@ -79,21 +80,38 @@ class Books extends Component {
               </FormBtn>
             </form>
           </Col>
-          <Col size="md-6 sm-12">
-            <Jumbotron>
-              <h1>Search Results</h1>
-            </Jumbotron>
+          <Col size="md-12 sm-12">
+            <Col size="md-12">
+              <h1 className="text-center">Search Results</h1>
+            </Col>
             {this.state.googleAllBooks.length ? (
               <List>
 
                 {this.state.googleAllBooks.map(googleBook => (
-                  <ListItem >
-                    <Link to={"/books/" + googleBook.id}>
-                      <strong>
-                        {googleBook.volumeInfo.title} by
-                      </strong>
-                    </Link>
-                    <SaveBtn onClick={() => this.saveBook(this.googleBook.id)} />
+                  <ListItem data-id={googleBook.id} key={googleBook.id}>
+                   
+                      <h3>
+                        {googleBook.volumeInfo.title} by {googleBook.volumeInfo.publisher}
+                      </h3>
+                 
+                    <p>{googleBook.volumeInfo.description}</p>
+                    <a target="_blank" href={googleBook.volumeInfo.previewLink}>
+                      View
+                    </a>
+                    <SaveBtn onClick={() => {
+                      const saveJasonBookData = {
+                        bookid: googleBook.id,
+                        title: googleBook.volumeInfo.title,
+                        author: googleBook.volumeInfo.publisher,
+                        previewlink: googleBook.volumeInfo.previewLink,
+                        decsription: googleBook.volumeInfo.description,
+                        saved: true
+                      }
+                      this.saveBook(saveJasonBookData)
+                    }
+                    }
+
+                    />
                   </ListItem>
                 ))}
               </List>
